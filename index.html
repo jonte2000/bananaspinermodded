@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Banana Spinner</title>
+
+<style>
+*{box-sizing:border-box}
+
+html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    font-family:Arial,sans-serif;
+    background:
+        radial-gradient(circle at center,#fffdf2 0%,#fff 55%,#f5f5f5 100%);
+    user-select:none;
+    -webkit-user-select:none;
+}
+
+button{
+    font:inherit;
+}
+
+#game{
+    position:relative;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+}
+
+/* ================= BANANA ================= */
+
+#bananaArea{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+#banana{
+    position:relative;
+    z-index:5;
+
+    font-size:clamp(150px,25vw,280px);
+    line-height:1;
+
+    display:inline-block;
+
+    cursor:pointer;
+    touch-action:manipulation;
+
+    user-select:none;
+    -webkit-user-select:none;
+    -webkit-tap-highlight-color:transparent;
+
+    outline:none;
+
+    will-change:transform,filter;
+
+    filter:drop-shadow(0 15px 15px rgba(0,0,0,.12));
+
+    transition:filter .15s ease;
+}
+
+#banana:hover{
+    filter:drop-shadow(0 18px 20px rgba(0,0,0,.16));
+}
+
+#banana:active{
+    filter:drop-shadow(0 8px 10px rgba(0,0,0,.12));
+}
+
+/* ================= TOP BAR ================= */
+
+#topbar{
+    position:absolute;
+    top:16px;
+    left:16px;
+    right:16px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    z-index:20;
+}
+
+#currency{
+    padding:10px 15px;
+
+    border:1px solid #ddd;
+    border-radius:14px;
+
+    background:rgba(255,255,255,.9);
+    backdrop-filter:blur(10px);
+
+    box-shadow:0 4px 20px rgba(0,0,0,.07);
+
+    font-weight:bold;
+}
+
+#shopButton{
+    border:1px solid #ddd;
+    border-radius:14px;
+
+    padding:10px 16px;
+
+    background:white;
+
+    cursor:pointer;
+
+    box-shadow:0 4px 20px rgba(0,0,0,.07);
+
+    transition:.15s;
+}
+
+#shopButton:hover{
+    transform:translateY(-2px);
+}
+
+#shopButton:active{
+    transform:scale(.96);
+}
+
+/* ================= STATS ================= */
+
+#stats{
+    position:absolute;
+
+    left:50%;
+    bottom:18px;
+
+    transform:translateX(-50%);
+
+    display:flex;
+    gap:9px;
+
+    flex-wrap:wrap;
+    justify-content:center;
+
+    z-index:15;
+
+    pointer-events:none;
+}
+
+.stat{
+    padding:8px 12px;
+
+    border:1px solid #ddd;
+    border-radius:12px;
+
+    background:rgba(255,255,255,.88);
+    backdrop-filter:blur(8px);
+
+    box-shadow:0 3px 15px rgba(0,0,0,.06);
+
+    font-size:14px;
+    color:#333;
+
+    white-space:nowrap;
+}
+
+/* ================= COMBO ================= */
+
+#combo{
+    position:absolute;
+
+    left:50%;
+    top:15%;
+
+    transform:translateX(-50%);
+
+    font-size:24px;
+    font-weight:bold;
+
+    opacity:0;
+
+    pointer-events:none;
+
+    z-index:10;
+
+    transition:opacity .2s;
+}
+
+#combo.active{
+    opacity:1;
+}
+
+/* ================= FLOATING TEXT ================= */
+
+.float{
+    position:absolute;
+
+    z-index:50;
+
+    pointer-events:none;
+
+    font-weight:bold;
+    font-size:20px;
+
+    animation:floatUp .8s ease-out forwards;
+}
+
+@keyframes floatUp{
+    from{
+        opacity:1;
+        transform:translate(-50%,0) scale(1);
+    }
+
+    to{
+        opacity:0;
+        transform:translate(-50%,-80px) scale(1.25);
+    }
+}
+
+/* ================= SHOP ================= */
+
+#shop{
+    position:absolute;
+
+    top:70px;
+    right:16px;
+
+    width:min(440px,calc(100% - 32px));
+    max-height:calc(100% - 100px);
+
+    padding:16px;
+
+    background:rgba(255,255,255,.97);
+
+    border:1px solid #ddd;
+    border-radius:18px;
+
+    box-shadow:0 15px 50px rgba(0,0,0,.18);
+
+    overflow-y:auto;
+
+    z-index:100;
+
+    display:none;
+}
+
+#shop.open{
+    display:block;
+    animation:shopIn .18s ease-out;
+}
+
+@keyframes shopIn{
+    from{
+        opacity:0;
+        transform:translateY(-8px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+#shopHeader{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    margin-bottom:12px;
+}
+
+#shopHeader h2{
+    margin:0;
+}
+
+#closeShop{
+    width:35px;
+    height:35px;
+
+    border:0;
+    border-radius:10px;
+
+    background:#f2f2f2;
+
+    cursor:pointer;
+
+    font-size:22px;
+}
+
+/* ================= UPGRADES ================= */
+
+.upgrade{
+    width:100%;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    gap:12px;
+
+    padding:13px;
+
+    margin-bottom:8px;
+
+    border:1px solid #ddd;
+    border-radius:13px;
+
+    background:#fafafa;
+
+    text-align:left;
+
+    cursor:pointer;
+
+    transition:.12s;
+}
+
+.upgrade:hover:not(:disabled){
+    transform:translateY(-2px);
+    background:#fff;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+}
+
+.upgrade:active:not(:disabled){
+    transform:scale(.985);
+}
+
+.upgrade:disabled{
+    opacity:.42;
+    cursor:default;
+}
+
+.upgradeName{
+    font-weight:bold;
+    margin-bottom:4px;
+}
+
+.upgradeDescription{
+    color:#777;
+    font-size:12px;
+}
+
+.upgradeRight{
+    text-align:right;
+    white-space:nowrap;
+}
+
+.upgradeCost{
+    font-weight:bold;
+}
+
+.upgradeLevel{
+    margin-top:3px;
+    color:#888;
+    font-size:11px;
+}
+
+/* ================= MILESTONE ================= */
+
+#milestone{
+    position:absolute;
+
+    top:50%;
+    left:50%;
+
+    transform:translate(-50%,-50%) scale(.8);
+
+    opacity:0;
+
+    z-index:200;
+
+    padding:18px 25px;
+
+    border-radius:18px;
+
+    background:white;
+
+    box-shadow:0 15px 60px rgba(0,0,0,.2);
+
+    text-align:center;
+
+    pointer-events:none;
+
+    transition:.3s;
+}
+
+#milestone.show{
+    opacity:1;
+    transform:translate(-50%,-50%) scale(1);
+}
+
+#milestoneTitle{
+    font-size:24px;
+    font-weight:bold;
+}
+
+#milestoneText{
+    margin-top:5px;
+    color:#777;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:600px){
+
+    #topbar{
+        top:10px;
+        left:10px;
+        right:10px;
+    }
+
+    #shop{
+        top:60px;
+        right:10px;
+        width:calc(100% - 20px);
+        max-height:calc(100% - 80px);
+    }
+
+    #stats{
+        bottom:10px;
+        gap:5px;
+    }
+
+    .stat{
+        font-size:12px;
+        padding:7px 9px;
+    }
+
+    #combo{
+        top:20%;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div id="game">
+
+    <div id="topbar">
+
+        <div id="currency">
+            🍌 <span id="coins">0</span>
+        </div>
+
+        <button id="shopButton">
+            🛒 Upgrades
+        </button>
+
+    </div>
+
+
+    <div id="bananaArea">
+        <div id="banana">🍌</div>
+    </div>
+
+
+    <div id="combo">
+        COMBO ×<span id="comboValue">1</span>
+    </div>
+
+
+    <div id="stats">
+
+        <div class="stat">
+            Spins: <b id="spins">0</b>
+        </div>
+
+        <div class="stat">
+            Speed: <b id="speed">0</b> RPS
+        </div>
+
+        <div class="stat">
+            Power: <b id="power">110</b>
+        </div>
+
+    </div>
+
+
+    <div id="shop">
+
+        <div id="shopHeader">
+
+            <h2>🍌 Upgrades</h2>
+
+            <button id="closeShop">×</button>
+
+        </div>
+
+        <div id="upgradeList"></div>
+
+    </div>
+
+
+    <div id="milestone">
+
+        <div id="milestoneTitle">
+            🍌 MILESTONE!
+        </div>
+
+        <div id="milestoneText"></div>
+
+    </div>
+
+</div>
+
+
+<script>
+(() => {
+
+"use strict";
+
+/* =========================================
+   ELEMENTS
+========================================= */
+
+const banana =
+    document.getElementById("banana");
+
+const coinsEl =
+    document.getElementById("coins");
+
+const spinsEl =
+    document.getElementById("spins");
+
+const speedEl =
+    document.getElementById("speed");
+
+const powerEl =
+    document.getElementById("power");
+
+const comboEl =
+    document.getElementById("combo");
+
+const comboValueEl =
+    document.getElementById("comboValue");
+
+const shop =
+    document.getElementById("shop");
+
+const shopButton =
+    document.getElementById("shopButton");
+
+const closeShop =
+    document.getElementById("closeShop");
+
+const upgradeList =
+    document.getElementById("upgradeList");
+
+const milestone =
+    document.getElementById("milestone");
+
+const milestoneText =
+    document.getElementById("milestoneText");
+
+
+/* =========================================
+   GAME STATE
+========================================= */
+
+let angle = 0;
+
+let speed = 0;
+
+let spins = 0;
+
+let coins = 0;
+
+let combo = 1;
+
+let comboTimer = 0;
+
+let lastTime = performance.now();
+
+let lastCompletedRotation = 0;
+
+let lastSave = 0;
+
+let milestoneIndex = 0;
+
+
+/* =========================================
+   UPGRADES
+========================================= */
+
+const upgrades = [
+
+    ["Banana Grip","+25 click power",25,"click",25],
+    ["Better Grip","+50 click power",75,"click",50],
+    ["Golden Peel","+100 click power",200,"click",100],
+    ["Banana Juice","+250 click power",600,"click",250],
+    ["Turbo Banana","+600 click power",1500,"click",600],
+    ["Rocket Peel","+1,500 click power",4000,"click",1500],
+    ["Super Banana","+4,000 click power",10000,"click",4000],
+    ["Banana Engine","+10,000 click power",30000,"click",10000],
+    ["Banana Reactor","+30,000 click power",100000,"click",30000],
+    ["Golden Engine","+100,000 click power",350000,"click",100000],
+
+    ["Tiny Spinner","+2 passive RPS",100,"auto",2],
+    ["Small Spinner","+5 passive RPS",300,"auto",5],
+    ["Spin Motor","+15 passive RPS",1000,"auto",15],
+    ["Turbo Motor","+40 passive RPS",4000,"auto",40],
+    ["Banana Factory","+100 passive RPS",15000,"auto",100],
+    ["Spin Factory","+300 passive RPS",50000,"auto",300],
+    ["Mega Motor","+1,000 passive RPS",200000,"auto",1000],
+    ["Quantum Motor","+3,000 passive RPS",750000,"auto",3000],
+
+    ["Smooth Wheels","10% less friction",500,"friction",.10],
+    ["Oil Machine","15% less friction",2500,"friction",.15],
+    ["Liquid Banana","20% less friction",10000,"friction",.20],
+
+    ["Lucky Banana","10% double coins",1500,"crit",.10],
+    ["Very Lucky Banana","15% double coins",6000,"crit",.15],
+    ["Golden Luck","20% triple coins",25000,"crit",.20],
+
+    ["Spin Multiplier","+1 coin per spin",5000,"coins",1],
+    ["Golden Multiplier","+5 coins per spin",25000,"coins",5],
+    ["Diamond Multiplier","+20 coins per spin",100000,"coins",20],
+    ["Banana Empire","+100 coins per spin",500000,"coins",100],
+    ["Banana Dimension","+500 coins per spin",2500000,"coins",500],
+
+    ["Infinity Banana","DOUBLE ALL MAJOR STATS",10000000,"ultimate",1]
+
+];
+
+const levels =
+    new Array(upgrades.length).fill(0);
+
+
+/* =========================================
+   NUMBER FORMAT
+========================================= */
+
+function formatNumber(value){
+
+    value = Math.floor(value);
+
+    if(value >= 1e15)
+        return (value/1e15).toFixed(1).replace(".0","")+"Qa";
+
+    if(value >= 1e12)
+        return (value/1e12).toFixed(1).replace(".0","")+"T";
+
+    if(value >= 1e9)
+        return (value/1e9).toFixed(1).replace(".0","")+"B";
+
+    if(value >= 1e6)
+        return (value/1e6).toFixed(1).replace(".0","")+"M";
+
+    if(value >= 1e3)
+        return (value/1e3).toFixed(1).replace(".0","")+"K";
+
+    return value.toLocaleString("en-US");
+}
+
+
+/* =========================================
+   UPGRADE VALUES
+========================================= */
+
+function ultimateMultiplier(){
+
+    return levels[29] > 0
+        ? Math.pow(2,levels[29])
+        : 1;
+}
+
+
+function getClickPower(){
+
+    let value = 110;
+
+    upgrades.forEach((u,i)=>{
+
+        if(u[3] === "click")
+            value += u[4] * levels[i];
+
+    });
+
+    return value * ultimateMultiplier();
+}
+
+
+function getPassiveSpeed(){
+
+    let value = 0;
+
+    upgrades.forEach((u,i)=>{
+
+        if(u[3] === "auto")
+            value += u[4] * levels[i];
+
+    });
+
+    return value * ultimateMultiplier();
+}
+
+
+function getFriction(){
+
+    let reduction = 0;
+
+    upgrades.forEach((u,i)=>{
+
+        if(u[3] === "friction")
+            reduction += u[4] * levels[i];
+
+    });
+
+    reduction =
+        Math.min(reduction,.9);
+
+    return 1 - reduction;
+}
+
+
+function getCritChance(){
+
+    let chance = 0;
+
+    upgrades.forEach((u,i)=>{
+
+        if(u[3] === "crit")
+            chance += u[4] * levels[i];
+
+    });
+
+    return Math.min(chance,.75);
+}
+
+
+function getCoinsPerSpin(){
+
+    let value = 1;
+
+    upgrades.forEach((u,i)=>{
+
+        if(u[3] === "coins")
+            value += u[4] * levels[i];
+
+    });
+
+    return value * ultimateMultiplier();
+}
+
+
+/* =========================================
+   SAVE / LOAD
+========================================= */
+
+function save(){
+
+    try{
+
+        localStorage.setItem(
+            "banana-spinner-v3",
+            JSON.stringify({
+                angle,
+                speed,
+                spins,
+                coins,
+                levels,
+                milestoneIndex
+            })
+        );
+
+    }catch(e){}
+}
+
+
+function load(){
+
+    try{
+
+        const saved =
+            JSON.parse(
+                localStorage.getItem(
+                    "banana-spinner-v3"
+                )
+            );
+
+        if(!saved)
+            return;
+
+        if(Number.isFinite(saved.angle))
+            angle = saved.angle;
+
+        if(Number.isFinite(saved.speed))
+            speed = Math.max(0,saved.speed);
+
+        if(Number.isFinite(saved.spins))
+            spins = Math.max(0,saved.spins);
+
+        if(Number.isFinite(saved.coins))
+            coins = Math.max(0,saved.coins);
+
+        if(Number.isFinite(saved.milestoneIndex))
+            milestoneIndex =
+                Math.max(
+                    0,
+                    saved.milestoneIndex
+                );
+
+        if(Array.isArray(saved.levels)){
+
+            saved.levels.forEach((v,i)=>{
+
+                if(
+                    i < levels.length &&
+                    Number.isFinite(v)
+                ){
+
+                    levels[i] =
+                        Math.max(
+                            0,
+                            Math.floor(v)
+                        );
+                }
+
+            });
+
+        }
+
+    }catch(e){}
+}
+
+
+load();
+
+
+/* =========================================
+   CLICK / MOMENTUM
+========================================= */
+
+function spinBanana(event){
+
+    const power =
+        getClickPower();
+
+    comboTimer = 1.5;
+
+    combo =
+        Math.min(
+            combo + .15,
+            10
+        );
+
+    speed +=
+        power *
+        combo;
+
+    showFloatingText(
+        "+" + formatNumber(power * combo) + " speed",
+        event
+    );
+
+    comboEl.classList.add("active");
+
+    comboValueEl.textContent =
+        combo.toFixed(1);
+
+    banana.animate(
+        [
+            {scale:1},
+            {scale:1.06},
+            {scale:1}
+        ],
+        {
+            duration:120,
+            easing:"ease-out"
+        }
+    );
+
+}
+
+
+/* =========================================
+   INPUT
+========================================= */
+
+banana.addEventListener(
+    "pointerdown",
+    event=>{
+
+        event.preventDefault();
+
+        spinBanana(event);
+
+    }
+);
+
+
+banana.addEventListener(
+    "dragstart",
+    event=>{
+
+        event.preventDefault();
+
+    }
+);
+
+
+document.addEventListener(
+    "keydown",
+    event=>{
+
+        if(
+            event.code === "Space" ||
+            event.code === "Enter"
+        ){
+
+            event.preventDefault();
+
+            spinBanana();
+
+        }
+
+    }
+);
+
+
+/* =========================================
+   FLOATING TEXT
+========================================= */
+
+function showFloatingText(text,event){
+
+    const el =
+        document.createElement("div");
+
+    el.className = "float";
+
+    el.textContent = text;
+
+    let x =
+        window.innerWidth / 2;
+
+    let y =
+        window.innerHeight / 2;
+
+    if(event){
+
+        x = event.clientX;
+        y = event.clientY;
+
+    }
+
+    el.style.left = x + "px";
+    el.style.top = y + "px";
+
+    document.body.appendChild(el);
+
+    setTimeout(
+        ()=>el.remove(),
+        800
+    );
+}
+
+
+/* =========================================
+   COIN REWARD
+========================================= */
+
+function rewardSpin(){
+
+    let reward =
+        getCoinsPerSpin();
+
+    let critical = false;
+
+    if(
+        Math.random() <
+        getCritChance()
+    ){
+
+        reward *= 3;
+
+        critical = true;
+
+    }
+
+    coins += reward;
+
+    if(critical){
+
+        showFloatingText(
+            "💥 CRIT +" +
+            formatNumber(reward)
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   MILESTONES
+========================================= */
+
+const milestones = [
+
+    [10,"First Banana Spin"],
+    [100,"Banana Beginner"],
+    [1000,"Banana Spinner"],
+    [10000,"Banana Addict"],
+    [100000,"Banana Master"],
+    [1000000,"Banana Legend"],
+    [10000000,"BANANA GOD"]
+
+];
+
+
+function checkMilestone(){
+
+    while(
+        milestoneIndex <
+        milestones.length &&
+        spins >=
+        milestones[milestoneIndex][0]
+    ){
+
+        const data =
+            milestones[milestoneIndex];
+
+        milestoneIndex++;
+
+        milestoneText.textContent =
+            formatNumber(data[0]) +
+            " spins — " +
+            data[1];
+
+        milestone.classList.add("show");
+
+        setTimeout(
+            ()=>{
+                milestone.classList.remove("show");
+            },
+            2200
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   ROTATION COUNTER
+========================================= */
+
+function processSpins(){
+
+    const completed =
+        Math.floor(
+            angle / 360
+        );
+
+    if(
+        completed >
+        lastCompletedRotation
+    ){
+
+        const amount =
+            completed -
+            lastCompletedRotation;
+
+        lastCompletedRotation =
+            completed;
+
+        spins += amount;
+
+        for(
+            let i=0;
+            i<amount;
+            i++
+        ){
+
+            rewardSpin();
+
+        }
+
+        checkMilestone();
+
+    }
+
+}
+
+
+/* =========================================
+   SHOP
+========================================= */
+
+function getUpgradeCost(index){
+
+    return Math.floor(
+        upgrades[index][2] *
+        Math.pow(
+            1.65,
+            levels[index]
+        )
+    );
+
+}
+
+
+function renderShop(){
+
+    upgradeList.innerHTML = "";
+
+    upgrades.forEach((upgrade,index)=>{
+
+        const cost =
+            getUpgradeCost(index);
+
+        const button =
+            document.createElement("button");
+
+        button.className =
+            "upgrade";
+
+        button.disabled =
+            coins < cost;
+
+        button.innerHTML = `
+
+            <div>
+
+                <div class="upgradeName">
+                    ${index+1}. ${upgrade[0]}
+                </div>
+
+                <div class="upgradeDescription">
+                    ${upgrade[1]}
+                </div>
+
+            </div>
+
+            <div class="upgradeRight">
+
+                <div class="upgradeCost">
+                    ${formatNumber(cost)} 🍌
+                </div>
+
+                <div class="upgradeLevel">
+                    Level ${levels[index]}
+                </div>
+
+            </div>
+
+        `;
+
+        button.onclick =
+            ()=>buyUpgrade(index);
+
+        upgradeList.appendChild(button);
+
+    });
+
+}
+
+
+function buyUpgrade(index){
+
+    const cost =
+        getUpgradeCost(index);
+
+    if(coins < cost)
+        return;
+
+    coins -= cost;
+
+    levels[index]++;
+
+    renderShop();
+
+    updateUI();
+
+    save();
+
+}
+
+
+/* =========================================
+   SHOP EVENTS
+========================================= */
+
+shopButton.onclick = ()=>{
+
+    shop.classList.toggle("open");
+
+    if(shop.classList.contains("open"))
+        renderShop();
+
+};
+
+
+closeShop.onclick = ()=>{
+
+    shop.classList.remove("open");
+
+};
+
+
+/* =========================================
+   UI
+========================================= */
+
+function updateUI(){
+
+    coinsEl.textContent =
+        formatNumber(coins);
+
+    spinsEl.textContent =
+        formatNumber(spins);
+
+    speedEl.textContent =
+        (speed / 360).toFixed(1);
+
+    powerEl.textContent =
+        formatNumber(getClickPower());
+
+}
+
+
+/* =========================================
+   GAME LOOP
+========================================= */
+
+function animate(now){
+
+    const dt =
+        Math.min(
+            (now-lastTime)/1000,
+            .05
+        );
+
+    lastTime = now;
+
+
+    /* passive rotation */
+
+    speed +=
+        getPassiveSpeed() *
+        dt *
+        360;
+
+
+    /* ACTUAL ROTATION */
+
+    angle +=
+        speed * dt;
+
+
+    /* count complete rotations */
+
+    processSpins();
+
+
+    /* combo decay */
+
+    if(comboTimer > 0){
+
+        comboTimer -= dt;
+
+    }else{
+
+        combo =
+            Math.max(
+                1,
+                combo - dt * 1.5
+            );
+
+        if(combo <= 1.01)
+            comboEl.classList.remove("active");
+
+    }
+
+
+    /* stronger friction at low speed */
+
+    const lowSpeedBoost =
+        Math.max(
+            0,
+            8 - speed / 25
+        ) * 8;
+
+
+    const friction =
+        (
+            35 +
+            lowSpeedBoost
+        ) *
+        getFriction();
+
+
+    speed =
+        Math.max(
+            0,
+            speed - friction * dt
+        );
+
+
+    /* DRAW */
+
+    banana.style.transform =
+        `rotate(${angle}deg)`;
+
+
+    comboValueEl.textContent =
+        combo.toFixed(1);
+
+
+    updateUI();
+
+
+    /* autosave */
+
+    if(now-lastSave > 1000){
+
+        save();
+
+        lastSave = now;
+
+    }
+
+
+    requestAnimationFrame(
+        animate
+    );
+
+}
+
+
+/* =========================================
+   START
+========================================= */
+
+lastCompletedRotation =
+    Math.floor(angle / 360);
+
+updateUI();
+
+requestAnimationFrame(
+    animate
+);
+
+})();
+</script>
+
+</body>
+</html>
