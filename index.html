@@ -899,23 +899,15 @@ banana.addEventListener(
 );
 
 
-document.addEventListener(
-    "keydown",
-    event=>{
-
-        if(
-            event.code === "Space" ||
-            event.code === "Enter"
-        ){
-
-            event.preventDefault();
-
-            spinBanana();
-
-        }
-
+document.addEventListener("keydown", (event) => {
+    if (
+        (event.code === "Space" || event.code === "Enter") &&
+        !event.repeat
+    ) {
+        event.preventDefault();
+        spinBanana();
     }
-);
+));
 
 
 /* =========================================
