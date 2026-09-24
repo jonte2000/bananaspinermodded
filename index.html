@@ -3,48 +3,61 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Banana Spinner</title>
+<title>Modded Banana Spinner</title>
 
 <style>
 *{box-sizing:border-box}
 
 html,body{
-    margin:0;
     width:100%;
     height:100%;
+    margin:0;
     overflow:hidden;
-    font-family:Arial,sans-serif;
-    background:
-        radial-gradient(circle at center,#fffdf2 0%,#fff 55%,#f5f5f5 100%);
-    user-select:none;
-    -webkit-user-select:none;
+    background:#fff;
 }
 
-button{
-    font:inherit;
+body{
+    font-family:Arial,sans-serif;
+    user-select:none;
+    -webkit-user-select:none;
+    -webkit-touch-callout:none;
 }
 
 #game{
-    position:relative;
     width:100%;
     height:100%;
+    position:relative;
     overflow:hidden;
 }
 
-/* ================= BANANA ================= */
+/* MODDED LABEL */
+
+#modded{
+    position:absolute;
+    top:15px;
+    left:50%;
+    transform:translateX(-50%);
+
+    font-size:18px;
+    font-weight:bold;
+
+    color:#222;
+
+    z-index:20;
+}
+
+/* BANANA */
 
 #bananaArea{
     position:absolute;
     inset:0;
+
     display:flex;
     align-items:center;
     justify-content:center;
 }
 
 #banana{
-    position:relative;
-    z-index:5;
-
     font-size:clamp(150px,25vw,280px);
     line-height:1;
 
@@ -55,152 +68,140 @@ button{
 
     user-select:none;
     -webkit-user-select:none;
+    -webkit-touch-callout:none;
+
+    outline:none !important;
+    border:none;
+
     -webkit-tap-highlight-color:transparent;
 
-    outline:none;
+    will-change:transform;
 
-    will-change:transform,filter;
+    transform-origin:center;
 
-    filter:drop-shadow(0 15px 15px rgba(0,0,0,.12));
-
-    transition:filter .15s ease;
+    filter:drop-shadow(
+        0 15px 15px rgba(0,0,0,.12)
+    );
 }
 
-#banana:hover{
-    filter:drop-shadow(0 18px 20px rgba(0,0,0,.16));
-}
-
+#banana:focus,
+#banana:focus-visible,
 #banana:active{
-    filter:drop-shadow(0 8px 10px rgba(0,0,0,.12));
+    outline:none !important;
+    box-shadow:none !important;
 }
 
-/* ================= TOP BAR ================= */
+/* TOP */
 
 #topbar{
     position:absolute;
-    top:16px;
-    left:16px;
-    right:16px;
+    top:50px;
+    left:15px;
+    right:15px;
 
     display:flex;
     justify-content:space-between;
     align-items:center;
 
-    z-index:20;
+    z-index:30;
 }
 
-#currency{
-    padding:10px 15px;
-
-    border:1px solid #ddd;
-    border-radius:14px;
-
-    background:rgba(255,255,255,.9);
-    backdrop-filter:blur(10px);
-
-    box-shadow:0 4px 20px rgba(0,0,0,.07);
-
-    font-weight:bold;
-}
-
-#shopButton{
-    border:1px solid #ddd;
-    border-radius:14px;
-
-    padding:10px 16px;
+#coins{
+    padding:9px 13px;
 
     background:white;
-
-    cursor:pointer;
-
-    box-shadow:0 4px 20px rgba(0,0,0,.07);
-
-    transition:.15s;
-}
-
-#shopButton:hover{
-    transform:translateY(-2px);
-}
-
-#shopButton:active{
-    transform:scale(.96);
-}
-
-/* ================= STATS ================= */
-
-#stats{
-    position:absolute;
-
-    left:50%;
-    bottom:18px;
-
-    transform:translateX(-50%);
-
-    display:flex;
-    gap:9px;
-
-    flex-wrap:wrap;
-    justify-content:center;
-
-    z-index:15;
-
-    pointer-events:none;
-}
-
-.stat{
-    padding:8px 12px;
 
     border:1px solid #ddd;
     border-radius:12px;
 
-    background:rgba(255,255,255,.88);
-    backdrop-filter:blur(8px);
+    font-weight:bold;
 
-    box-shadow:0 3px 15px rgba(0,0,0,.06);
+    box-shadow:0 4px 15px rgba(0,0,0,.06);
+}
+
+#shopButton{
+    padding:9px 14px;
+
+    background:white;
+
+    border:1px solid #ddd;
+    border-radius:12px;
+
+    cursor:pointer;
+
+    box-shadow:0 4px 15px rgba(0,0,0,.06);
+}
+
+/* STATS */
+
+#stats{
+    position:absolute;
+
+    left:12px;
+    right:12px;
+    bottom:18px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    gap:10px;
+    flex-wrap:wrap;
+
+    pointer-events:none;
+
+    z-index:15;
+}
+
+.stat{
+    padding:7px 11px;
+
+    background:rgba(255,255,255,.9);
+
+    border:1px solid #ddd;
+    border-radius:10px;
 
     font-size:14px;
-    color:#333;
 
     white-space:nowrap;
 }
 
-/* ================= COMBO ================= */
+/* COMBO */
 
 #combo{
     position:absolute;
 
+    top:19%;
     left:50%;
-    top:15%;
 
     transform:translateX(-50%);
 
-    font-size:24px;
+    font-size:23px;
     font-weight:bold;
 
     opacity:0;
 
     pointer-events:none;
 
-    z-index:10;
+    z-index:15;
 
-    transition:opacity .2s;
+    transition:opacity .15s;
 }
 
 #combo.active{
     opacity:1;
 }
 
-/* ================= FLOATING TEXT ================= */
+/* FLOATING TEXT */
 
 .float{
     position:absolute;
 
-    z-index:50;
-
     pointer-events:none;
+    z-index:100;
 
+    font-size:18px;
     font-weight:bold;
-    font-size:20px;
 
     animation:floatUp .8s ease-out forwards;
 }
@@ -208,57 +209,44 @@ button{
 @keyframes floatUp{
     from{
         opacity:1;
-        transform:translate(-50%,0) scale(1);
+        transform:translate(-50%,0);
     }
 
     to{
         opacity:0;
-        transform:translate(-50%,-80px) scale(1.25);
+        transform:translate(-50%,-75px);
     }
 }
 
-/* ================= SHOP ================= */
+/* SHOP */
 
 #shop{
     position:absolute;
 
-    top:70px;
-    right:16px;
+    top:95px;
+    right:15px;
 
-    width:min(440px,calc(100% - 32px));
-    max-height:calc(100% - 100px);
+    width:min(430px,calc(100% - 30px));
+    max-height:calc(100% - 125px);
 
-    padding:16px;
+    padding:15px;
 
-    background:rgba(255,255,255,.97);
+    background:white;
 
     border:1px solid #ddd;
-    border-radius:18px;
+    border-radius:16px;
 
     box-shadow:0 15px 50px rgba(0,0,0,.18);
 
     overflow-y:auto;
 
-    z-index:100;
-
     display:none;
+
+    z-index:100;
 }
 
 #shop.open{
     display:block;
-    animation:shopIn .18s ease-out;
-}
-
-@keyframes shopIn{
-    from{
-        opacity:0;
-        transform:translateY(-8px);
-    }
-
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
 }
 
 #shopHeader{
@@ -274,38 +262,38 @@ button{
 }
 
 #closeShop{
-    width:35px;
-    height:35px;
+    width:34px;
+    height:34px;
 
     border:0;
-    border-radius:10px;
+    border-radius:9px;
 
-    background:#f2f2f2;
+    background:#f1f1f1;
+
+    font-size:21px;
 
     cursor:pointer;
-
-    font-size:22px;
 }
 
-/* ================= UPGRADES ================= */
+/* UPGRADES */
 
 .upgrade{
     width:100%;
 
     display:flex;
-    align-items:center;
     justify-content:space-between;
+    align-items:center;
 
-    gap:12px;
+    gap:10px;
 
-    padding:13px;
+    padding:12px;
 
     margin-bottom:8px;
 
-    border:1px solid #ddd;
-    border-radius:13px;
-
     background:#fafafa;
+
+    border:1px solid #ddd;
+    border-radius:11px;
 
     text-align:left;
 
@@ -317,15 +305,10 @@ button{
 .upgrade:hover:not(:disabled){
     transform:translateY(-2px);
     background:#fff;
-    box-shadow:0 5px 15px rgba(0,0,0,.08);
-}
-
-.upgrade:active:not(:disabled){
-    transform:scale(.985);
 }
 
 .upgrade:disabled{
-    opacity:.42;
+    opacity:.4;
     cursor:default;
 }
 
@@ -335,8 +318,8 @@ button{
 }
 
 .upgradeDescription{
-    color:#777;
     font-size:12px;
+    color:#777;
 }
 
 .upgradeRight{
@@ -354,13 +337,13 @@ button{
     font-size:11px;
 }
 
-/* ================= MILESTONE ================= */
+/* MILESTONE */
 
 #milestone{
     position:absolute;
 
-    top:50%;
     left:50%;
+    top:50%;
 
     transform:translate(-50%,-50%) scale(.8);
 
@@ -370,9 +353,10 @@ button{
 
     padding:18px 25px;
 
-    border-radius:18px;
-
     background:white;
+
+    border:1px solid #ddd;
+    border-radius:16px;
 
     box-shadow:0 15px 60px rgba(0,0,0,.2);
 
@@ -380,7 +364,7 @@ button{
 
     pointer-events:none;
 
-    transition:.3s;
+    transition:.25s;
 }
 
 #milestone.show{
@@ -389,7 +373,7 @@ button{
 }
 
 #milestoneTitle{
-    font-size:24px;
+    font-size:23px;
     font-weight:bold;
 }
 
@@ -398,35 +382,28 @@ button{
     color:#777;
 }
 
-/* ================= RESPONSIVE ================= */
-
 @media(max-width:600px){
 
     #topbar{
-        top:10px;
+        top:48px;
         left:10px;
         right:10px;
     }
 
     #shop{
-        top:60px;
+        top:88px;
         right:10px;
         width:calc(100% - 20px);
-        max-height:calc(100% - 80px);
+        max-height:calc(100% - 105px);
     }
 
     #stats{
         bottom:10px;
-        gap:5px;
     }
 
     .stat{
         font-size:12px;
-        padding:7px 9px;
-    }
-
-    #combo{
-        top:20%;
+        padding:6px 8px;
     }
 }
 </style>
@@ -436,13 +413,17 @@ button{
 
 <div id="game">
 
+    <div id="modded">
+        Modded
+    </div>
+
     <div id="topbar">
 
-        <div id="currency">
-            🍌 <span id="coins">0</span>
+        <div id="coins">
+            🍌 <span id="coinsValue">0</span>
         </div>
 
-        <button id="shopButton">
+        <button id="shopButton" type="button">
             🛒 Upgrades
         </button>
 
@@ -455,7 +436,7 @@ button{
 
 
     <div id="combo">
-        COMBO ×<span id="comboValue">1</span>
+        COMBO ×<span id="comboValue">1.0</span>
     </div>
 
 
@@ -466,7 +447,7 @@ button{
         </div>
 
         <div class="stat">
-            Speed: <b id="speed">0</b> RPS
+            Speed: <b id="speed">0.0</b> RPS
         </div>
 
         <div class="stat">
@@ -482,7 +463,9 @@ button{
 
             <h2>🍌 Upgrades</h2>
 
-            <button id="closeShop">×</button>
+            <button id="closeShop" type="button">
+                ×
+            </button>
 
         </div>
 
@@ -509,29 +492,30 @@ button{
 
 "use strict";
 
-/* =========================================
+
+/* =====================================
    ELEMENTS
-========================================= */
+===================================== */
 
 const banana =
     document.getElementById("banana");
 
-const coinsEl =
-    document.getElementById("coins");
+const coinsValue =
+    document.getElementById("coinsValue");
 
-const spinsEl =
+const spinsDisplay =
     document.getElementById("spins");
 
-const speedEl =
+const speedDisplay =
     document.getElementById("speed");
 
-const powerEl =
+const powerDisplay =
     document.getElementById("power");
 
-const comboEl =
+const combo =
     document.getElementById("combo");
 
-const comboValueEl =
+const comboValue =
     document.getElementById("comboValue");
 
 const shop =
@@ -553,9 +537,9 @@ const milestoneText =
     document.getElementById("milestoneText");
 
 
-/* =========================================
+/* =====================================
    GAME STATE
-========================================= */
+===================================== */
 
 let angle = 0;
 
@@ -565,22 +549,23 @@ let spins = 0;
 
 let coins = 0;
 
-let combo = 1;
+let comboMultiplier = 1;
 
 let comboTimer = 0;
 
-let lastTime = performance.now();
-
-let lastCompletedRotation = 0;
+let lastTime =
+    performance.now();
 
 let lastSave = 0;
+
+let lastCompletedSpin = 0;
 
 let milestoneIndex = 0;
 
 
-/* =========================================
-   UPGRADES
-========================================= */
+/* =====================================
+   30 UPGRADES
+===================================== */
 
 const upgrades = [
 
@@ -608,9 +593,9 @@ const upgrades = [
     ["Oil Machine","15% less friction",2500,"friction",.15],
     ["Liquid Banana","20% less friction",10000,"friction",.20],
 
-    ["Lucky Banana","10% double coins",1500,"crit",.10],
-    ["Very Lucky Banana","15% double coins",6000,"crit",.15],
-    ["Golden Luck","20% triple coins",25000,"crit",.20],
+    ["Lucky Banana","10% chance for 2x coins",1500,"crit",.10],
+    ["Very Lucky Banana","15% chance for 2x coins",6000,"crit",.15],
+    ["Golden Luck","20% chance for 3x coins",25000,"crit",.20],
 
     ["Spin Multiplier","+1 coin per spin",5000,"coins",1],
     ["Golden Multiplier","+5 coins per spin",25000,"coins",5],
@@ -622,40 +607,128 @@ const upgrades = [
 
 ];
 
+
 const levels =
     new Array(upgrades.length).fill(0);
 
 
-/* =========================================
-   NUMBER FORMAT
-========================================= */
+/* =====================================
+   FORMAT NUMBERS
+===================================== */
 
-function formatNumber(value){
+function formatNumber(n){
 
-    value = Math.floor(value);
+    n = Math.floor(
+        Math.max(0,n)
+    );
 
-    if(value >= 1e15)
-        return (value/1e15).toFixed(1).replace(".0","")+"Qa";
+    if(n >= 1e15)
+        return (n/1e15)
+            .toFixed(1)
+            .replace(".0","")
+            + "Qa";
 
-    if(value >= 1e12)
-        return (value/1e12).toFixed(1).replace(".0","")+"T";
+    if(n >= 1e12)
+        return (n/1e12)
+            .toFixed(1)
+            .replace(".0","")
+            + "T";
 
-    if(value >= 1e9)
-        return (value/1e9).toFixed(1).replace(".0","")+"B";
+    if(n >= 1e9)
+        return (n/1e9)
+            .toFixed(1)
+            .replace(".0","")
+            + "B";
 
-    if(value >= 1e6)
-        return (value/1e6).toFixed(1).replace(".0","")+"M";
+    if(n >= 1e6)
+        return (n/1e6)
+            .toFixed(1)
+            .replace(".0","")
+            + "M";
 
-    if(value >= 1e3)
-        return (value/1e3).toFixed(1).replace(".0","")+"K";
+    if(n >= 1e3)
+        return (n/1e3)
+            .toFixed(1)
+            .replace(".0","")
+            + "K";
 
-    return value.toLocaleString("en-US");
+    return n.toLocaleString("en-US");
 }
 
 
-/* =========================================
-   UPGRADE VALUES
-========================================= */
+/* =====================================
+   LOAD
+===================================== */
+
+try{
+
+    const saved =
+        JSON.parse(
+            localStorage.getItem(
+                "banana-spinner-modded-v1"
+            )
+        );
+
+    if(saved){
+
+        if(Number.isFinite(saved.angle))
+            angle = saved.angle;
+
+        if(Number.isFinite(saved.speed))
+            speed = Math.max(
+                0,
+                saved.speed
+            );
+
+        if(Number.isFinite(saved.spins))
+            spins = Math.max(
+                0,
+                Math.floor(saved.spins)
+            );
+
+        if(Number.isFinite(saved.coins))
+            coins = Math.max(
+                0,
+                saved.coins
+            );
+
+        if(Array.isArray(saved.levels)){
+
+            saved.levels.forEach(
+                (level,index)=>{
+
+                    if(
+                        index < levels.length &&
+                        Number.isFinite(level)
+                    ){
+
+                        levels[index] =
+                            Math.max(
+                                0,
+                                Math.floor(level)
+                            );
+
+                    }
+
+                }
+            );
+
+        }
+
+        if(Number.isFinite(saved.milestoneIndex))
+            milestoneIndex =
+                Math.max(
+                    0,
+                    saved.milestoneIndex
+                );
+    }
+
+}catch(_){}
+
+
+/* =====================================
+   UPGRADE CALCULATIONS
+===================================== */
 
 function ultimateMultiplier(){
 
@@ -669,12 +742,19 @@ function getClickPower(){
 
     let value = 110;
 
-    upgrades.forEach((u,i)=>{
+    upgrades.forEach(
+        (upgrade,index)=>{
 
-        if(u[3] === "click")
-            value += u[4] * levels[i];
+            if(upgrade[3] === "click"){
 
-    });
+                value +=
+                    upgrade[4] *
+                    levels[index];
+
+            }
+
+        }
+    );
 
     return value * ultimateMultiplier();
 }
@@ -684,12 +764,19 @@ function getPassiveSpeed(){
 
     let value = 0;
 
-    upgrades.forEach((u,i)=>{
+    upgrades.forEach(
+        (upgrade,index)=>{
 
-        if(u[3] === "auto")
-            value += u[4] * levels[i];
+            if(upgrade[3] === "auto"){
 
-    });
+                value +=
+                    upgrade[4] *
+                    levels[index];
+
+            }
+
+        }
+    );
 
     return value * ultimateMultiplier();
 }
@@ -699,15 +786,25 @@ function getFriction(){
 
     let reduction = 0;
 
-    upgrades.forEach((u,i)=>{
+    upgrades.forEach(
+        (upgrade,index)=>{
 
-        if(u[3] === "friction")
-            reduction += u[4] * levels[i];
+            if(upgrade[3] === "friction"){
 
-    });
+                reduction +=
+                    upgrade[4] *
+                    levels[index];
+
+            }
+
+        }
+    );
 
     reduction =
-        Math.min(reduction,.9);
+        Math.min(
+            reduction,
+            .9
+        );
 
     return 1 - reduction;
 }
@@ -717,14 +814,24 @@ function getCritChance(){
 
     let chance = 0;
 
-    upgrades.forEach((u,i)=>{
+    upgrades.forEach(
+        (upgrade,index)=>{
 
-        if(u[3] === "crit")
-            chance += u[4] * levels[i];
+            if(upgrade[3] === "crit"){
 
-    });
+                chance +=
+                    upgrade[4] *
+                    levels[index];
 
-    return Math.min(chance,.75);
+            }
+
+        }
+    );
+
+    return Math.min(
+        chance,
+        .75
+    );
 }
 
 
@@ -732,104 +839,27 @@ function getCoinsPerSpin(){
 
     let value = 1;
 
-    upgrades.forEach((u,i)=>{
+    upgrades.forEach(
+        (upgrade,index)=>{
 
-        if(u[3] === "coins")
-            value += u[4] * levels[i];
+            if(upgrade[3] === "coins"){
 
-    });
+                value +=
+                    upgrade[4] *
+                    levels[index];
+
+            }
+
+        }
+    );
 
     return value * ultimateMultiplier();
 }
 
 
-/* =========================================
-   SAVE / LOAD
-========================================= */
-
-function save(){
-
-    try{
-
-        localStorage.setItem(
-            "banana-spinner-v3",
-            JSON.stringify({
-                angle,
-                speed,
-                spins,
-                coins,
-                levels,
-                milestoneIndex
-            })
-        );
-
-    }catch(e){}
-}
-
-
-function load(){
-
-    try{
-
-        const saved =
-            JSON.parse(
-                localStorage.getItem(
-                    "banana-spinner-v3"
-                )
-            );
-
-        if(!saved)
-            return;
-
-        if(Number.isFinite(saved.angle))
-            angle = saved.angle;
-
-        if(Number.isFinite(saved.speed))
-            speed = Math.max(0,saved.speed);
-
-        if(Number.isFinite(saved.spins))
-            spins = Math.max(0,saved.spins);
-
-        if(Number.isFinite(saved.coins))
-            coins = Math.max(0,saved.coins);
-
-        if(Number.isFinite(saved.milestoneIndex))
-            milestoneIndex =
-                Math.max(
-                    0,
-                    saved.milestoneIndex
-                );
-
-        if(Array.isArray(saved.levels)){
-
-            saved.levels.forEach((v,i)=>{
-
-                if(
-                    i < levels.length &&
-                    Number.isFinite(v)
-                ){
-
-                    levels[i] =
-                        Math.max(
-                            0,
-                            Math.floor(v)
-                        );
-                }
-
-            });
-
-        }
-
-    }catch(e){}
-}
-
-
-load();
-
-
-/* =========================================
-   CLICK / MOMENTUM
-========================================= */
+/* =====================================
+   SPIN
+===================================== */
 
 function spinBanana(event){
 
@@ -838,44 +868,50 @@ function spinBanana(event){
 
     comboTimer = 1.5;
 
-    combo =
+    comboMultiplier =
         Math.min(
-            combo + .15,
+            comboMultiplier + .15,
             10
         );
 
-    speed +=
+    const added =
         power *
-        combo;
+        comboMultiplier;
+
+    speed += added;
+
 
     showFloatingText(
-        "+" + formatNumber(power * combo) + " speed",
+        "+" +
+        formatNumber(added) +
+        " speed",
         event
     );
 
-    comboEl.classList.add("active");
 
-    comboValueEl.textContent =
-        combo.toFixed(1);
+    combo.classList.add("active");
+
+    comboValue.textContent =
+        comboMultiplier.toFixed(1);
+
 
     banana.animate(
         [
-            {scale:1},
-            {scale:1.06},
-            {scale:1}
+            {transform:`rotate(${angle}deg) scale(1)`},
+            {transform:`rotate(${angle}deg) scale(1.06)`},
+            {transform:`rotate(${angle}deg) scale(1)`}
         ],
         {
             duration:120,
             easing:"ease-out"
         }
     );
-
 }
 
 
-/* =========================================
-   INPUT
-========================================= */
+/* =====================================
+   MOUSE / TOUCH
+===================================== */
 
 banana.addEventListener(
     "pointerdown",
@@ -899,20 +935,40 @@ banana.addEventListener(
 );
 
 
-document.addEventListener("keydown", (event) => {
-    if (
-        (event.code === "Space" || event.code === "Enter") &&
-        !event.repeat
-    ) {
-        event.preventDefault();
-        spinBanana();
+/* =====================================
+   KEYBOARD
+
+   IMPORTANT:
+   !event.repeat prevents holding
+   Space or Enter from repeatedly
+   adding speed.
+===================================== */
+
+document.addEventListener(
+    "keydown",
+    event=>{
+
+        if(
+            (
+                event.code === "Space" ||
+                event.code === "Enter"
+            ) &&
+            !event.repeat
+        ){
+
+            event.preventDefault();
+
+            spinBanana();
+
+        }
+
     }
-));
+);
 
 
-/* =========================================
+/* =====================================
    FLOATING TEXT
-========================================= */
+===================================== */
 
 function showFloatingText(text,event){
 
@@ -936,8 +992,11 @@ function showFloatingText(text,event){
 
     }
 
-    el.style.left = x + "px";
-    el.style.top = y + "px";
+    el.style.left =
+        x + "px";
+
+    el.style.top =
+        y + "px";
 
     document.body.appendChild(el);
 
@@ -948,16 +1007,14 @@ function showFloatingText(text,event){
 }
 
 
-/* =========================================
-   COIN REWARD
-========================================= */
+/* =====================================
+   COINS
+===================================== */
 
 function rewardSpin(){
 
     let reward =
         getCoinsPerSpin();
-
-    let critical = false;
 
     if(
         Math.random() <
@@ -966,14 +1023,6 @@ function rewardSpin(){
 
         reward *= 3;
 
-        critical = true;
-
-    }
-
-    coins += reward;
-
-    if(critical){
-
         showFloatingText(
             "💥 CRIT +" +
             formatNumber(reward)
@@ -981,12 +1030,13 @@ function rewardSpin(){
 
     }
 
+    coins += reward;
 }
 
 
-/* =========================================
+/* =====================================
    MILESTONES
-========================================= */
+===================================== */
 
 const milestones = [
 
@@ -1001,7 +1051,7 @@ const milestones = [
 ];
 
 
-function checkMilestone(){
+function checkMilestones(){
 
     while(
         milestoneIndex <
@@ -1010,15 +1060,17 @@ function checkMilestone(){
         milestones[milestoneIndex][0]
     ){
 
-        const data =
+        const milestoneData =
             milestones[milestoneIndex];
 
         milestoneIndex++;
 
         milestoneText.textContent =
-            formatNumber(data[0]) +
+            formatNumber(
+                milestoneData[0]
+            ) +
             " spins — " +
-            data[1];
+            milestoneData[1];
 
         milestone.classList.add("show");
 
@@ -1030,13 +1082,12 @@ function checkMilestone(){
         );
 
     }
-
 }
 
 
-/* =========================================
-   ROTATION COUNTER
-========================================= */
+/* =====================================
+   COMPLETED SPINS
+===================================== */
 
 function processSpins(){
 
@@ -1046,39 +1097,42 @@ function processSpins(){
         );
 
     if(
-        completed >
-        lastCompletedRotation
+        completed <=
+        lastCompletedSpin
+    )
+        return;
+
+
+    const amount =
+        completed -
+        lastCompletedSpin;
+
+
+    lastCompletedSpin =
+        completed;
+
+
+    spins += amount;
+
+
+    for(
+        let i=0;
+        i<amount;
+        i++
     ){
 
-        const amount =
-            completed -
-            lastCompletedRotation;
-
-        lastCompletedRotation =
-            completed;
-
-        spins += amount;
-
-        for(
-            let i=0;
-            i<amount;
-            i++
-        ){
-
-            rewardSpin();
-
-        }
-
-        checkMilestone();
+        rewardSpin();
 
     }
 
+
+    checkMilestones();
 }
 
 
-/* =========================================
+/* =====================================
    SHOP
-========================================= */
+===================================== */
 
 function getUpgradeCost(index){
 
@@ -1089,7 +1143,6 @@ function getUpgradeCost(index){
             levels[index]
         )
     );
-
 }
 
 
@@ -1097,55 +1150,67 @@ function renderShop(){
 
     upgradeList.innerHTML = "";
 
-    upgrades.forEach((upgrade,index)=>{
+    upgrades.forEach(
+        (upgrade,index)=>{
 
-        const cost =
-            getUpgradeCost(index);
+            const cost =
+                getUpgradeCost(index);
 
-        const button =
-            document.createElement("button");
+            const button =
+                document.createElement(
+                    "button"
+                );
 
-        button.className =
-            "upgrade";
+            button.type = "button";
 
-        button.disabled =
-            coins < cost;
+            button.className =
+                "upgrade";
 
-        button.innerHTML = `
+            button.disabled =
+                coins < cost;
 
-            <div>
 
-                <div class="upgradeName">
-                    ${index+1}. ${upgrade[0]}
+            button.innerHTML = `
+
+                <div>
+
+                    <div class="upgradeName">
+                        ${index+1}. ${upgrade[0]}
+                    </div>
+
+                    <div class="upgradeDescription">
+                        ${upgrade[1]}
+                    </div>
+
                 </div>
 
-                <div class="upgradeDescription">
-                    ${upgrade[1]}
+                <div class="upgradeRight">
+
+                    <div class="upgradeCost">
+                        ${formatNumber(cost)} 🍌
+                    </div>
+
+                    <div class="upgradeLevel">
+                        Level ${levels[index]}
+                    </div>
+
                 </div>
 
-            </div>
+            `;
 
-            <div class="upgradeRight">
 
-                <div class="upgradeCost">
-                    ${formatNumber(cost)} 🍌
-                </div>
+            button.onclick =
+                ()=>{
+                    buyUpgrade(index);
+                };
 
-                <div class="upgradeLevel">
-                    Level ${levels[index]}
-                </div>
 
-            </div>
+            upgradeList.appendChild(
+                button
+            );
 
-        `;
-
-        button.onclick =
-            ()=>buyUpgrade(index);
-
-        upgradeList.appendChild(button);
-
-    });
-
+        }
+    );
 }
 
 
@@ -1157,26 +1222,29 @@ function buyUpgrade(index){
     if(coins < cost)
         return;
 
+
     coins -= cost;
 
     levels[index]++;
+
 
     renderShop();
 
     updateUI();
 
     save();
-
 }
 
 
-/* =========================================
-   SHOP EVENTS
-========================================= */
+/* =====================================
+   SHOP BUTTONS
+===================================== */
 
 shopButton.onclick = ()=>{
 
-    shop.classList.toggle("open");
+    shop.classList.toggle(
+        "open"
+    );
 
     if(shop.classList.contains("open"))
         renderShop();
@@ -1186,35 +1254,64 @@ shopButton.onclick = ()=>{
 
 closeShop.onclick = ()=>{
 
-    shop.classList.remove("open");
+    shop.classList.remove(
+        "open"
+    );
 
 };
 
 
-/* =========================================
-   UI
-========================================= */
+/* =====================================
+   SAVE
+===================================== */
 
-function updateUI(){
+function save(){
 
-    coinsEl.textContent =
-        formatNumber(coins);
+    try{
 
-    spinsEl.textContent =
-        formatNumber(spins);
+        localStorage.setItem(
+            "banana-spinner-modded-v1",
+            JSON.stringify({
+                angle,
+                speed,
+                spins,
+                coins,
+                levels,
+                milestoneIndex
+            })
+        );
 
-    speedEl.textContent =
-        (speed / 360).toFixed(1);
-
-    powerEl.textContent =
-        formatNumber(getClickPower());
+    }catch(_){}
 
 }
 
 
-/* =========================================
+/* =====================================
+   UI
+===================================== */
+
+function updateUI(){
+
+    coinsValue.textContent =
+        formatNumber(coins);
+
+    spinsDisplay.textContent =
+        formatNumber(spins);
+
+    speedDisplay.textContent =
+        (speed / 360).toFixed(1);
+
+    powerDisplay.textContent =
+        formatNumber(
+            getClickPower()
+        );
+
+}
+
+
+/* =====================================
    GAME LOOP
-========================================= */
+===================================== */
 
 function animate(now){
 
@@ -1227,26 +1324,34 @@ function animate(now){
     lastTime = now;
 
 
-    /* passive rotation */
+    /*
+    Passive speed
+    */
 
     speed +=
         getPassiveSpeed() *
-        dt *
-        360;
+        360 *
+        dt;
 
 
-    /* ACTUAL ROTATION */
+    /*
+    Rotation
+    */
 
     angle +=
         speed * dt;
 
 
-    /* count complete rotations */
+    /*
+    Completed spins
+    */
 
     processSpins();
 
 
-    /* combo decay */
+    /*
+    Combo
+    */
 
     if(comboTimer > 0){
 
@@ -1254,21 +1359,29 @@ function animate(now){
 
     }else{
 
-        combo =
+        comboMultiplier =
             Math.max(
                 1,
-                combo - dt * 1.5
+                comboMultiplier -
+                dt * 1.5
             );
 
-        if(combo <= 1.01)
-            comboEl.classList.remove("active");
+        if(comboMultiplier <= 1.01){
+
+            combo.classList.remove(
+                "active"
+            );
+
+        }
 
     }
 
 
-    /* stronger friction at low speed */
+    /*
+    Friction
+    */
 
-    const lowSpeedBoost =
+    const lowSpeedFriction =
         Math.max(
             0,
             8 - speed / 25
@@ -1278,7 +1391,7 @@ function animate(now){
     const friction =
         (
             35 +
-            lowSpeedBoost
+            lowSpeedFriction
         ) *
         getFriction();
 
@@ -1286,26 +1399,33 @@ function animate(now){
     speed =
         Math.max(
             0,
-            speed - friction * dt
+            speed -
+            friction * dt
         );
 
 
-    /* DRAW */
+    /*
+    Draw
+    */
 
     banana.style.transform =
         `rotate(${angle}deg)`;
 
 
-    comboValueEl.textContent =
-        combo.toFixed(1);
+    comboValue.textContent =
+        comboMultiplier.toFixed(1);
 
 
     updateUI();
 
 
-    /* autosave */
+    /*
+    Autosave
+    */
 
-    if(now-lastSave > 1000){
+    if(
+        now-lastSave >= 1000
+    ){
 
         save();
 
@@ -1321,12 +1441,14 @@ function animate(now){
 }
 
 
-/* =========================================
+/* =====================================
    START
-========================================= */
+===================================== */
 
-lastCompletedRotation =
-    Math.floor(angle / 360);
+lastCompletedSpin =
+    Math.floor(
+        angle / 360
+    );
 
 updateUI();
 
