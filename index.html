@@ -861,31 +861,17 @@ function getCoinsPerSpin(){
    SPIN
 ===================================== */
 
-function spinBanana(event){
-
-    const power =
-        getClickPower();
-
+function spinBanana(){
+    combo = Math.min(10, combo + 0.15);
     comboTimer = 1.5;
 
-    comboMultiplier =
-        Math.min(
-            comboMultiplier + .15,
-            10
-        );
-
-    const added =
-        power *
-        comboMultiplier;
-
-    speed += added;
-
+    const boost = getClickPower() * comboMultiplier();
+    speed += boost;
 
     showFloatingText(
-        "+" +
-        formatNumber(added) +
-        " speed",
-        event
+        "+" + Math.round(boost),
+        window.innerWidth / 2,
+        window.innerHeight / 2 - 90
     );
 
 
